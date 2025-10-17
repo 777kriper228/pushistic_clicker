@@ -1,0 +1,2 @@
+# pushistic_clicker
+igra
