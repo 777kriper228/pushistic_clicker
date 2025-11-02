@@ -1,32 +1,56 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-is_smiling = False
+
+STATES = [
+    {"clicks": 0, "image": "cat_normal.png", "message": ""},                # начальное
+    {"clicks": 1, "image": "cat_smile.png", "message": "Вы покормили пушистика!"},        # 1 клик
+    {"clicks": 4, "image": "cat_dirty.png", "message": "Пушистик испачкался, его нужно умыть!"},  # 1+3
+    {"clicks": 9, "image": "cat_clean.png", "message": "Пушистик теперь чистый и хочет играть!"}, # +5
+    {"clicks": 16, "image": "cat_tired.png", "message": "Пушистик устал."},              # +7
+]
+
+click_count = 0
+current_state_index = 0
+images = {}
+
+def load_images():
+    global images
+    try:
+        for state in STATES:
+            img = Image.open(state["image"]).resize((512, 512), Image.LANCZOS)
+            images[state["image"]] = ImageTk.PhotoImage(img)
+    except FileNotFoundError as e:
+        print(f"Ошибка: файл изображения не найден — {e}")
+        root.destroy()
+        exit()
+
 def on_click(event=None):
-    global is_smiling
-    if is_smiling:
-        # Возвращаем нормальное изображение и скрываем надпись
-        label.config(image=normal_photo)
-        message_label.config(text="")
-        is_smiling = False
-    else:
-        label.config(image=smile_photo)
-        message_label.config(text="Вы помогли пушистику!")
-        is_smiling = True
+    global click_count, current_state_index
+    click_count += 1
+
+    new_index = current_state_index
+    for i, state in enumerate(STATES):
+        if click_count >= state["clicks"]:
+            new_index = i
+        else:
+            break
+
+    if new_index != current_state_index:
+        current_state_index = new_index
+        state = STATES[current_state_index]
+        label.config(image=images[state["image"]])
+        message_label.config(text=state["message"])
+
 root = tk.Tk()
 root.title("Кликер с котиком")
 root.geometry("700x900")
 root.configure(bg="#FFF9C4")  # Спокойный желтый фон
-try:
-    normal_img = Image.open("cat_normal.png").resize((512, 512), Image.LANCZOS)
-    smile_img = Image.open("cat_smile.png").resize((512, 512), Image.LANCZOS)
-except FileNotFoundError as e:
-    print(f"Ошибка: файл изображения не найден — {e}")
-    root.destroy()
-    exit()
-normal_photo = ImageTk.PhotoImage(normal_img)
-smile_photo = ImageTk.PhotoImage(smile_img)
-label = tk.Label(root, image=normal_photo, bg="#FFF9C4", cursor="arrow")
+
+load_images()
+
+label = tk.Label(root, image=images["cat_normal.png"], bg="#FFF9C4", cursor="hand2")
 label.pack(pady=20)
+
 message_label = tk.Label(
     root,
     text="",
@@ -35,5 +59,7 @@ message_label = tk.Label(
     bg="#FFF9C4"
 )
 message_label.pack(pady=10)
+
 label.bind("<Button-1>", on_click)
+
 root.mainloop()
