@@ -4,9 +4,9 @@ from PIL import Image, ImageTk
 STATES = [
     {"clicks": 0, "image": "cat_normal.png", "message": ""},                # начальное
     {"clicks": 1, "image": "cat_smile.png", "message": "Вы покормили пушистика!"},        # 1 клик
-    {"clicks": 4, "image": "cat_dirty.png", "message": "Пушистик испачкался, его нужно умыть!"},  # 1+3
-    {"clicks": 9, "image": "cat_clean.png", "message": "Пушистик теперь чистый и хочет играть!"}, # +5
-    {"clicks": 16, "image": "cat_tired.png", "message": "Пушистик устал."},              # +7
+    {"clicks": 4, "image": "cat_dirty.png.png", "message": "Пушистик испачкался, его нужно умыть!"},  # 1+3
+    {"clicks": 9, "image": "cat_clean.png.png", "message": "Пушистик теперь чистый и хочет играть!"}, # +5
+    {"clicks": 16, "image": "cat_tired.png.png", "message": "Пушистик устал."},              # +7
 ]
 
 click_count = 0
