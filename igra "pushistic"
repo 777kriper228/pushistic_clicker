@@ -1,26 +1,21 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-
+is_smiling = False
 def on_click(event=None):
-    # Меняем изображение на улыбающегося кота
-    label.config(image=smile_photo)
-    
-    # Показываем надпись
-    message_label.config(text="Вы покормили Пушистика! Он Вам благодарен")
-    
-    # Через 2 секунды скрываем надпись и возвращаем нормальное изображение
-    root.after(2000, reset_cat)
-
-def reset_cat():
-    label.config(image=normal_photo)
-    message_label.config(text="")
-
+    global is_smiling
+    if is_smiling:
+        # Возвращаем нормальное изображение и скрываем надпись
+        label.config(image=normal_photo)
+        message_label.config(text="")
+        is_smiling = False
+    else:
+        label.config(image=smile_photo)
+        message_label.config(text="Вы помогли пушистику!")
+        is_smiling = True
 root = tk.Tk()
 root.title("Кликер с котиком")
 root.geometry("700x900")
 root.configure(bg="#FFF9C4")  # Спокойный желтый фон
-
-# Загружаем и масштабируем изображения
 try:
     normal_img = Image.open("cat_normal.png").resize((512, 512), Image.LANCZOS)
     smile_img = Image.open("cat_smile.png").resize((512, 512), Image.LANCZOS)
@@ -28,25 +23,17 @@ except FileNotFoundError as e:
     print(f"Ошибка: файл изображения не найден — {e}")
     root.destroy()
     exit()
-
 normal_photo = ImageTk.PhotoImage(normal_img)
 smile_photo = ImageTk.PhotoImage(smile_img)
-
-# Метка с изображением кота
-label = tk.Label(root, image=normal_photo, bg="#FFF9C4")
+label = tk.Label(root, image=normal_photo, bg="#FFF9C4", cursor="arrow")
 label.pack(pady=20)
-
-# Надпись для сообщения
 message_label = tk.Label(
     root,
     text="",
     font=("Arial", 25, "bold"),
-    fg="pink",
-    bg="#E93482"
+    fg="black",
+    bg="#FFF9C4"
 )
 message_label.pack(pady=10)
-
-# Привязка клика
 label.bind("<Button-1>", on_click)
-
 root.mainloop()
